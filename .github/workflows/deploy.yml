@@ -27,7 +27,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           REMOTE_HOST: "ec2-3-1-206-9.ap-southeast-1.compute.amazonaws.com"
           REMOTE_USER: "ubuntu"
-          TARGET: "/home/ubuntu/bojio/backend"
+          TARGET: "/var/www/bojio-backend"
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
