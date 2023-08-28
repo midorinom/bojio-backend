@@ -19,15 +19,15 @@ jobs:
 
     steps:
       - name: Checkout the files
-      uses: actions/checkout@v3
+        uses: actions/checkout@v3
       
       - name: Deploy to Server
-      uses: easingthemes/ssh-deploy@main
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-        REMOTE_HOST: "ec2-3-1-206-9.ap-southeast-1.compute.amazonaws.com"
-        REMOTE_USER: "ubuntu"
-        TARGET: "/home/ubuntu/bojio/backend"
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          REMOTE_HOST: "ec2-3-1-206-9.ap-southeast-1.compute.amazonaws.com"
+          REMOTE_USER: "ubuntu"
+          TARGET: "/home/ubuntu/bojio/backend"
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
