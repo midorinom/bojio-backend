@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:j1a2c3k4@localhost/bojio_db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:Password1234@bojio-db.c3tfalfhp9o3.ap-southeast-1.rds.amazonaws.com/bojio-db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:password1234@bojio-db.c3tfalfhp9o3.ap-southeast-1.rds.amazonaws.com/bojio-db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
