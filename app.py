@@ -1,8 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from controllers import demo_controller
-from models import user_model,demo_model
+
 # import auth
 # import events
 
@@ -12,6 +11,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:password1234@boji
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
+
+
+from controllers import demo_controller
+from models import user_model,demo_model
 
 if __name__ == "__main__":
     # Creates DB tables based on models created in models folder, only if they don't exists
