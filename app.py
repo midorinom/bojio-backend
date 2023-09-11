@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from controllers import demo_controller
+from models import user_model,demo_model
 # import auth
 # import events
-# from controllers import demo_controller
-# from models import user_model,demo_model
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:j1a2c3k4@localhost/bojio_db'
