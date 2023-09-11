@@ -52,6 +52,6 @@ jobs:
         TARGET: "/var/www/bojio-backend"
 
     - name: Run Flask App
-        run: |
-          python app.py
+      run: |
+        python app.py
       
