@@ -53,6 +53,6 @@ jobs:
 
     - name: Run Flask App
       run: |
-        python app.py
+        flask run
       
         
