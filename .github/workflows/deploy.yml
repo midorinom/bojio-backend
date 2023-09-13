@@ -47,5 +47,4 @@ jobs:
 
     - name: Run Flask App
       run: |
-        cd /var/www/bojio-backend
         python3 app.py
