@@ -43,7 +43,6 @@ jobs:
         echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key ${REMOTE_USER}@${REMOTE_HOST} '
             cd //var/www/bojio-backend &&
-            sudo apt-get update &&
             pip3 install -r requirements.txt &&
             python3 app.py
             '
