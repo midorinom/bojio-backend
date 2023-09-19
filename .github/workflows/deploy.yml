@@ -42,7 +42,7 @@ jobs:
       run: |
         echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key ${REMOTE_USER}@${REMOTE_HOST} '
-            cd //var/www/bojio-backend &&
+            cd /var/www/bojio-backend &&
             pip3 install -r requirements.txt &&
             nohup gunicorn -b 0.0.0.0:8000 app:app &
             '
