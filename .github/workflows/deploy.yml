@@ -45,5 +45,5 @@ jobs:
             cd /var/www/bojio-backend &&
             pip3 install -r requirements.txt &&
             pkill gunicorn &&
-            gunicorn -b 0.0.0.0:8000 app:app
+            nohup gunicorn -b 0.0.0.0:8000 app:app &
             '
