@@ -44,7 +44,9 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i private_key ${REMOTE_USER}@${REMOTE_HOST} '
             cd /var/www/bojio-backend &&
             pip3 install -r requirements.txt &&
-            nohup gunicorn -b 0.0.0.0:8000 app:app &
+            pkill gunicorn &&
+            gunicorn -b 0.0.0.0:8000 app:app &&
+            echo test.txt
             '
 
     # - name: SSH into EC2
