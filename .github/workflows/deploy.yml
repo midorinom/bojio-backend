@@ -43,25 +43,7 @@ jobs:
         echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key ${REMOTE_USER}@${REMOTE_HOST} '
             cd /var/www/bojio-backend &&
-            touch test.txt
+            pip3 install -r requirements.txt &&
+            pkill gunicorn &&
+            gunicorn -b 0.0.0.0:8000 app:app
             '
-
-    # - name: SSH into EC2
-    #   uses: appleboy/ssh-action@v1.0.0
-    #   with:
-    #     host: "ec2-3-1-206-9.ap-southeast-1.compute.amazonaws.com"
-    #     username: "ubuntu"
-    #     key: ${{ secrets.EC2_SSH_KEY }}
-
-    # - name: Install Dependencies on EC2
-    #   run: |
-    #     sudo apt-get update
-    #     pip3 install -r requirements.txt
-
-    # - name: Run Flask App
-    #   run: |
-    #     python3 app.py
-
-            # pip3 install -r requirements.txt &&
-            # pkill gunicorn &&
-            # gunicorn -b 0.0.0.0:8000 app:app &&
