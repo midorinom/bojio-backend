@@ -1,21 +1,22 @@
-# import auth
-# import events
-
+import os
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:j1a2c3k4@localhost/bojio_db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+if app.debug == False:
+    app.config.from_object('config.ProductionConfig')
+else:
+    app.config.from_object('config.DevelopmentConfig')
+
 db = SQLAlchemy(app)
 CORS(app)
 
-from controllers import demo_controller
-from models import user_model,demo_model
 
-if __name__ == "__main__":
-    # Creates DB tables based on models created in models folder, only if they don't exists
-    with app.app_context():
-        db.create_all()
-    app.run(port=8000, debug=True)
+from controllers import demo_controller
+from models import user_model, demo_model
+
+# Creates DB tables based on models created in models folder, only if they don't exists
+with app.app_context():
+    db.create_all()

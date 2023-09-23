@@ -1,4 +1,4 @@
-from __main__ import app, db
+from app import app, db
 from flask import jsonify, request
 from service.demo_service import get_message, add_message, update_message, delete_message
 from utilities.custom_exception_factory import MessageExistsException, IdNotFoundException
