@@ -3,5 +3,5 @@ class ProductionConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class DevelopmentConfig(object):
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:''@localhost/bojio_db'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:j1a2c3k4@localhost/bojio_db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
