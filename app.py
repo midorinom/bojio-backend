@@ -13,7 +13,7 @@ else:
 db = SQLAlchemy(app)
 CORS(app)
 
-
+app.secret_key = 'bojio'
 from controllers import demo_controller, user_controller
 from models import user_model, demo_model
 

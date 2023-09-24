@@ -4,50 +4,55 @@ from app import app, db
 import re 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-
 from models.user_model import User
-
+from flask import session, redirect, url_for
 # Create a SQLAlchemy engine to connect to your MySQL database
 
 
 
-@app.route('/login', methods =['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
     msg = ''
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        username = request.form['username']
-        password = request.form['password']
-        
-        # Create a session
-        
-        
-        # Execute a query and retrieve results as dictionaries
-        query = text('SELECT * FROM users WHERE username = :username AND password = :password')
-        result = db.session.execute(query, {"username": username, "password": password})
-        
-        # Fetch the results as dictionaries
-        users = result.fetchone()
-        
-        # Close the session
-        db.session.close()
+    
+    if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
 
-        if users:
-            session['loggedin'] = True
-            session['id'] = users['id']
-            session['username'] = users['username']
-            msg = 'Logged in successfully!'
-            return render_template('index.html', msg=msg)
-        else:
-            msg = 'Incorrect username / password!'
-    return render_template('login.html', msg=msg)
- 
+            # Use the login method to check if the user's credentials are valid
+            user = User.login_user(username, password)
 
-@app.route('/logout')
+            if user:
+                session['loggedin'] = True
+                session['id'] = user.user_id
+                session['username'] = user.username
+                msg = 'Logged in successfully!'
+                return {
+                        "status": "success",
+                        "message": msg
+                    }, 200
+                #return render_template('index.html', msg=msg)
+            else:
+                msg = 'Incorrect username or password!'
+                return {
+                        "status": "error",
+                        "message": msg
+                    }, 500
+        #return render_template('login.html', msg=msg)
+    return {
+            "status": "error",
+            "message": msg
+        }, 400
+    
+     
+
+@app.route('/logout', methods=['GET'])
 def logout():
-    session.pop('loggedin', None)
-    session.pop('id', None)
-    session.pop('username', None)
-    return redirect(url_for('login'))
+    User.logout_user()  # Call the logout method from your User model
+    msg = 'Logout successfully!'
+    return {
+                        "status": "success",
+                        "message": msg
+                    }, 200
  
 @app.route('/register', methods=['POST'])
 def register():

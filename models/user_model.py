@@ -3,6 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 from app import db
 from dataclasses import dataclass
+from flask_bcrypt import generate_password_hash, check_password_hash
+from flask import session
 
 @dataclass
 class User(db.Model):
@@ -18,8 +20,9 @@ class User(db.Model):
 
 
     @classmethod
-    def create_user(cls,username, email, password):
-        user = cls(username=username, email=email, password=password)
+    def create_user(cls, username, email, password):
+        hashed_password = generate_password_hash(password).decode('utf-8')
+        user = cls(username=username, email=email, password=hashed_password)
         db.session.add(user)
         db.session.commit()
 
@@ -37,3 +40,28 @@ class User(db.Model):
         if user:
             db.session.delete(user)
             db.session.commit()   
+    
+
+    @classmethod
+    def login_user(cls, username, password):
+        try:
+            # Find a user with the given username
+            user = cls.query.filter_by(username=username).first()
+
+            if user and check_password_hash(user.password, password):
+                # Password matches; return the user object
+                return user
+            else:
+                # Invalid username or password; return None
+                return None
+        except Exception as e:
+            # Handle exceptions (e.g., database connection issues)
+            return None
+
+        
+    @classmethod
+    def logout_user(cls):
+        # Clear the user's session data
+        session.pop('loggedin', None)
+        session.pop('id', None)
+        session.pop('username', None)
