@@ -44,9 +44,5 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i private_key -tt ${REMOTE_USER}@${REMOTE_HOST} '
             cd /var/www/bojio-backend &&
             pip3 install -r requirements.txt &&
-            tmux kill-session &&
-            tmux new-session -s flaskapp &&
-            pkill gunicorn &&
-            nohup gunicorn -b 0.0.0.0:8000 app:app &&
-            tmux detach-client
+            sudo systemctl restart bojio_flask.service
             '
