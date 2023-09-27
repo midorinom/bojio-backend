@@ -18,26 +18,26 @@ def demo_get():
     else:
         return jsonify(result)
 
-# @app.route('/demo/add', methods=['POST'])
-# def demo_add():
-#     try:
-#         data = request.get_json()
-#         # Calls service to perform business logic
-#         added_msg_obj = add_message(data)
-#     except MessageExistsException as e:
-#         return {
-#             "status": "failed",
-#             "message": str(e)
-#         }, 409
-#     except Exception:
-#         rollback_db()
-#         return {
-#             "status": "failed",
-#             "message": "Error occurred"
-#         }, 500
-#     else:
-#         db.session.commit()
-#         return jsonify(added_msg_obj)
+@app.route('/demo/add', methods=['POST'])
+def demo_add():
+    try:
+        data = request.get_json()
+        # Calls service to perform business logic
+        added_msg_obj = add_message(data)
+    except MessageExistsException as e:
+        return {
+            "status": "failed",
+            "message": str(e)
+        }, 409
+    except Exception:
+        rollback_db()
+        return {
+            "status": "failed",
+            "message": "Error occurred"
+        }, 500
+    else:
+        db.session.commit()
+        return jsonify(added_msg_obj)
     
 @app.route('/demo/update', methods=['POST'])
 def demo_update():
