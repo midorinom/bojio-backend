@@ -13,8 +13,8 @@ else:
 db = SQLAlchemy(app)
 CORS(app)
 
-
-from controllers import demo_controller
+app.secret_key = 'bojio'
+from controllers import demo_controller, user_controller
 from models import user_model, demo_model
 
 # Creates DB tables based on models created in models folder, only if they don't exists
