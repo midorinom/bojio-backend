@@ -15,8 +15,9 @@ def login():
     msg = ''
     
     if request.method == 'POST':
-            username = request.form['username']
-            password = request.form['password']
+            data = request.get_json()
+            username = data['username']
+            password = data['password']
 
             # Use the login method to check if the user's credentials are valid
             user = User.login_user(username, password)
@@ -58,9 +59,11 @@ def logout():
 def register():
     msg = ''
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        email = request.form.get('email')
+
+        data = request.get_json()
+        username = data['username']
+        password = data['password']
+        email = data['email']
 
         if not username or not password or not email:
             msg = 'Please fill out the form!'
