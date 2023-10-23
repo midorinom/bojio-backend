@@ -14,8 +14,8 @@ db = SQLAlchemy(app)
 CORS(app)
 
 app.secret_key = 'bojio'
-from controllers import demo_controller, user_controller
-from models import user_model, demo_model
+from controllers import demo_controller, user_controller, event_controller
+from models import user_model, demo_model, event_model
 
 # Creates DB tables based on models created in models folder, only if they don't exists
 with app.app_context():
