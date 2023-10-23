@@ -9,7 +9,68 @@ from flask import session, redirect, url_for
 # Create a SQLAlchemy engine to connect to your MySQL database
 
 
+@app.route('/profile', methods=['GET'])
+def display_profile():
+    if 'loggedin' in session:
+        user_id = session['id']
+        user = User.display_profile(user_id)  # Use the new method
+        if user:
+            return {
+                "status": "success",
+                "user_id": user.user_id,
+                "username": user.username,
+                "email": user.email
+            }, 200
+        else:
+            return {
+                "status": "error",
+                "message": "User not found"
+            }, 404
+    else:
+        return {
+            "status": "error",
+            "message": "User not logged in"
+        }, 401
+    
+@app.route('/profile', methods=['POST'])
+def update_profile():
+    if 'loggedin' in session:
+        user_id = session['id']
+        data = request.get_json()
+        new_username = data.get('username')
+        new_email = data.get('email')
+        new_password = data.get('password')
 
+        if not new_username or not new_email:
+            return {
+                "status": "error",
+                "message": "Please provide a new username and email"
+            }, 400
+
+        user = User.display_profile(user_id)  # Use the new method
+        if not user:
+            return {
+                "status": "error",
+                "message": "User not found"
+            }, 404
+
+        try:
+            user.update_user(user_id, new_username, new_email)  # Pass user_id
+            return {
+                "status": "success",
+                "message": "Profile updated successfully"
+            }, 200
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": "Error updating the profile. Please try again."
+            }, 500
+    else:
+        return {
+            "status": "error",
+            "message": "User not logged in"
+        }, 401
+   
 @app.route('/login', methods=['POST'])
 def login():
     msg = ''
