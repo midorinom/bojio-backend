@@ -20,7 +20,7 @@ def update_message(data):
     if demo_instance is None:
         raise CustomExceptionFactory().create_exception('id_not_found')
     elif Demo.check_message_exists(message):
-        raise CustomExceptionFactory().create_exception('message_exists')
+        raise CustomExceptionFactory().create_exception('demo_message_exists')
     else:
         demo_instance.update(message)
 

@@ -27,9 +27,31 @@ class Event(db.Model):
         self.price = price
     
     @classmethod
+    def get_event(cls, id):
+        return cls.query.get(id)
+    
+    @classmethod
+    def get_all_events(cls):
+        return cls.query.all()
+
+    @classmethod
     def create_event(cls, **kw):
         obj = cls(**kw)
         db.session.add(obj)
         db.session.flush()
         db.session.refresh(obj) # Refresh object so it will have the new ID
         return (obj)
+    
+    def update(self, event_with_updates):
+        self.title = event_with_updates['title']
+        self.description = event_with_updates['description']
+        self.start_date = event_with_updates['start_date']
+        self.end_date = event_with_updates['end_date']
+        self.location = event_with_updates['location']
+        self.capacity = event_with_updates['capacity']
+        self.price = event_with_updates['price']
+        db.session.flush()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.flush()
