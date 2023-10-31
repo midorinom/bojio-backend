@@ -1,7 +1,7 @@
 from app import app, db
 from flask import jsonify, request
 from service.demo_service import get_message, add_message, update_message, delete_message
-from utilities.custom_exception_factory import MessageExistsException, IdNotFoundException
+from utilities.custom_exception_factory import DemoMessageExistsException, IdNotFoundException
 import traceback
 
 @app.route('/demo/get', methods=['GET'])
@@ -24,7 +24,7 @@ def demo_add():
         data = request.get_json()
         # Calls service to perform business logic
         added_msg_obj = add_message(data)
-    except MessageExistsException as e:
+    except DemoMessageExistsException as e:
         return {
             "status": "failed",
             "message": str(e)
@@ -50,7 +50,7 @@ def demo_update():
             "status": "failed",
             "message": str(e)
         }, 400
-    except MessageExistsException as e:
+    except DemoMessageExistsException as e:
         return {
             "status": "failed",
             "message": str(e)
