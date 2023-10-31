@@ -5,6 +5,7 @@ from app import db
 from dataclasses import dataclass
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask import session
+from .event_attendance_table import event_attendance
 
 @dataclass
 class User(db.Model):
@@ -14,6 +15,7 @@ class User(db.Model):
     email:str = db.Column(db.String(200), unique=True, nullable=False)
     password:str = db.Column(db.String(200), nullable=False)
     registration_date:DateTime = db.Column(db.DateTime, default=func.now(), nullable=False)
+    events = db.relationship('Event', secondary = event_attendance, backref = 'attendees')
 
     def __repr__(self):
         return f"<User(user_id={self.user_id}, username='{self.username}', email='{self.email}', registration_date='{self.registration_date}')>"
@@ -62,3 +64,7 @@ class User(db.Model):
     def display_profile(cls, user_id):
         user = cls.query.get(user_id)
         return user if user else None
+    
+    @classmethod
+    def get_user(cls, id):
+        return cls.query.get(id)
