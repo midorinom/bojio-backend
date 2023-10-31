@@ -18,7 +18,6 @@ class User(db.Model):
     def __repr__(self):
         return f"<User(user_id={self.user_id}, username='{self.username}', email='{self.email}', registration_date='{self.registration_date}')>"
 
-
     @classmethod
     def create_user(cls, username, email, password):
         hashed_password = generate_password_hash(password).decode('utf-8')
@@ -27,41 +26,39 @@ class User(db.Model):
         db.session.commit()
 
     @classmethod
-    def update_user(user_id, new_username, new_email):
-        user = db.session.query(User).filter_by(user_id=user_id).first()
+    def update_user(cls, user_id, new_username, new_email):
+        user = cls.query.get(user_id)
         if user:
             user.username = new_username
             user.email = new_email
-            db.session.commit()
+            db.session.commit()  # Make sure to commit the changes
 
     @classmethod
-    def delete_user(user_id):
-        user = db.session.query(User).filter_by(user_id=user_id).first()
+    def delete_user(cls, user_id):
+        user = cls.query.get(user_id)
         if user:
             db.session.delete(user)
-            db.session.commit()   
-    
+            db.session.commit()
 
     @classmethod
     def login_user(cls, username, password):
         try:
-            # Find a user with the given username
             user = cls.query.filter_by(username=username).first()
 
             if user and check_password_hash(user.password, password):
-                # Password matches; return the user object
                 return user
             else:
-                # Invalid username or password; return None
                 return None
         except Exception as e:
-            # Handle exceptions (e.g., database connection issues)
             return None
 
-        
     @classmethod
     def logout_user(cls):
-        # Clear the user's session data
         session.pop('loggedin', None)
         session.pop('id', None)
         session.pop('username', None)
+
+    @classmethod
+    def display_profile(cls, user_id):
+        user = cls.query.get(user_id)
+        return user if user else None
