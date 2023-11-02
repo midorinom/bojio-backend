@@ -58,7 +58,7 @@ def create():
 def update():
     try:
         event_with_updates = request.get_json()
-        update_event(event_with_updates)
+        updated_event = update_event(event_with_updates)
     except (UserNotLoggedInException, UserIsNotHostException) as errerMsg:
         return {
             "status": "error",
@@ -79,7 +79,7 @@ def update():
         db.session.commit()
         return {
             "status": "success",
-            "message": "Event successfully updated"
+            "data": updated_event
         }, 200
     
 @app.route('/event/delete', methods=['POST'])
