@@ -16,8 +16,8 @@ class Event(db.Model):
     capacity:int = db.Column(db.Integer, nullable = False)
     price:Decimal = db.Column(db.Numeric(10, 2), nullable = False)
 
-    def __init__(self, host_id, title, description, start_date, end_date, location, capacity, price):
-        self.host_id = host_id
+    def __init__(self, host, title, description, start_date, end_date, location, capacity, price):
+        self.host = host
         self.title = title
         self.description = description
         self.start_date = start_date
