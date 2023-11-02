@@ -7,18 +7,54 @@ import traceback
 @app.route('/event/all-events', methods=['GET'])
 def retrieve_all_events():
     try:
-        # Calls service to perform business logic
         events = get_all_events()
     except UserNotLoggedInException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except UserNotFoundException as errerMsg:
+    except Exception:
+        rollback_db()
+        return {
+            "status": "error",
+            "message": "Error occurred"
+        }, 500
+    else:
+        return {
+            "status": "success",
+            "data": events
+        }, 200
+
+@app.route('/event/all-attending-events', methods=['GET'])
+def retrieve_all_attending_events():
+    try:
+        events = get_all_events_as_attendee()
+    except UserNotLoggedInException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
-        }, 404
+        }, 401
+    except Exception:
+        rollback_db()
+        return {
+            "status": "error",
+            "message": "Error occurred"
+        }, 500
+    else:
+        return {
+            "status": "success",
+            "data": events
+        }, 200
+    
+@app.route('/event/all-events-as-host', methods=['GET'])
+def retrieve_all_events_as_host():
+    try:
+        events = get_all_events_as_host()
+    except UserNotLoggedInException as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 401
     except Exception:
         rollback_db()
         return {
@@ -41,6 +77,11 @@ def create():
             "status": "error",
             "message": str(errerMsg)
         }, 401
+    except ValueError as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 400
     except Exception:
         rollback_db()
         return {
@@ -64,6 +105,11 @@ def update():
             "status": "error",
             "message": str(errerMsg)
         }, 401
+    except ValueError as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 400
     except EventNotFoundException as errerMsg:
         return {
             "status": "error",
@@ -85,9 +131,9 @@ def update():
 @app.route('/event/delete', methods=['POST'])
 def delete():
     try:
-        data = request.get_json()
+        event_id = request.get_json()['event_id']
         # Calls service to perform business logic
-        delete_event(data)
+        delete_event(event_id)
     except (UserNotLoggedInException, UserIsNotHostException) as errerMsg:
         return {
             "status": "error",
@@ -114,15 +160,15 @@ def delete():
 @app.route('/event/join', methods=['POST'])
 def join():
     try:
-        data = request.get_json()
+        event_id = request.get_json()['event_id']
         # Calls service to perform business logic
-        join_event(data)
-    except UserNotLoggedInException as errerMsg:
+        join_event(event_id)
+    except (UserNotLoggedInException, UserIsHostException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except (UserNotFoundException, EventNotFoundException) as errerMsg:
+    except EventNotFoundException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
@@ -151,12 +197,12 @@ def quit():
         data = request.get_json()
         # Calls service to perform business logic
         quit_event(data)
-    except UserNotLoggedInException as errerMsg:
+    except (UserNotLoggedInException, UserIsHostException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except (UserNotFoundException, EventNotFoundException) as errerMsg:
+    except EventNotFoundException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
