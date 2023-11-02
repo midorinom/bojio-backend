@@ -29,6 +29,10 @@ class UserIsNotHostException(Exception):
     def __init__(self, message='User is not the host for this event'):
         super(UserIsNotHostException, self).__init__(message)
 
+class UserIsHostException(Exception):
+    def __init__(self, message='User is the host for this event'):
+        super(UserIsHostException, self).__init__(message)
+
 # Generic exceptions
 class IdNotFoundException(Exception):
     def __init__(self, message='ID cannot be found'):
@@ -37,6 +41,8 @@ class IdNotFoundException(Exception):
 class CustomExceptionFactory:
     def create_exception(self, exception_type):
         match exception_type:
+            case 'id_not_found':
+                return IdNotFoundException()
             case 'demo_message_exists':
                 return DemoMessageExistsException()
             case 'user_not_found':
@@ -51,3 +57,5 @@ class CustomExceptionFactory:
                 return AlreadyWithdrawnException()
             case 'user_is_not_host':
                 return UserIsNotHostException()
+            case 'user_is_host':
+                return UserIsHostException()
