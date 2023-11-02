@@ -9,6 +9,16 @@ def retrieve_all_events():
     try:
         # Calls service to perform business logic
         events = get_all_events()
+    except UserNotLoggedInException as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 401
+    except UserNotFoundException as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 404
     except Exception:
         rollback_db()
         return {
@@ -26,7 +36,11 @@ def create():
     try:
         new_event = request.get_json()
         created_event_obj = create_event(new_event)
-        
+    except UserNotLoggedInException as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 401
     except Exception:
         rollback_db()
         return {
@@ -45,8 +59,12 @@ def update():
     try:
         event_with_updates = request.get_json()
         update_event(event_with_updates)
-
-    except IdNotFoundException as errerMsg:
+    except (UserNotLoggedInException, UserIsNotHostException) as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 401
+    except EventNotFoundException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
@@ -70,7 +88,12 @@ def delete():
         data = request.get_json()
         # Calls service to perform business logic
         delete_event(data)
-    except IdNotFoundException as errerMsg:
+    except (UserNotLoggedInException, UserIsNotHostException) as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 401
+    except EventNotFoundException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
@@ -94,6 +117,11 @@ def join():
         data = request.get_json()
         # Calls service to perform business logic
         join_event(data)
+    except UserNotLoggedInException as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 401
     except (UserNotFoundException, EventNotFoundException) as errerMsg:
         return {
             "status": "error",
@@ -123,6 +151,11 @@ def quit():
         data = request.get_json()
         # Calls service to perform business logic
         quit_event(data)
+    except UserNotLoggedInException as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 401
     except (UserNotFoundException, EventNotFoundException) as errerMsg:
         return {
             "status": "error",
