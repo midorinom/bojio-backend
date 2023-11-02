@@ -6,7 +6,7 @@ from decimal import Decimal
 @dataclass
 class Event(db.Model):
     __tablename__ = 'events'
-    id:int = db.Column(db.Integer, primary_key = True)
+    event_id:int = db.Column(db.Integer, primary_key = True)
     host_id:int = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable = False)
     title:str = db.Column(db.String(200), nullable = False)
     description:str = db.Column(db.Text, nullable = False)
@@ -27,8 +27,8 @@ class Event(db.Model):
         self.price = price
     
     @classmethod
-    def get_event(cls, id):
-        return cls.query.get(id)
+    def get_event(cls, event_id):
+        return cls.query.get(event_id)
     
     @classmethod
     def get_all_events(cls):
@@ -51,6 +51,7 @@ class Event(db.Model):
         self.capacity = event_with_updates['capacity']
         self.price = event_with_updates['price']
         db.session.flush()
+        return self
 
     def delete(self):
         db.session.delete(self)

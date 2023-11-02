@@ -15,7 +15,7 @@ def get_all_events():
 
         for event in events:
             event_obj = {
-                "id": event.id,
+                "event_id": event.event_id,
                 "host_id": event.host.user_id,
                 "title": event.title,
                 "description": event.description,
@@ -55,7 +55,7 @@ def create_event(new_event):
 
 def update_event(event_with_updates):
     if 'loggedin' in session:
-        event_id = event_with_updates['id']
+        event_id = event_with_updates['event_id']
         event_without_updates = Event.get_event(event_id)
 
         if event_without_updates.host.user_id != session['id']:
@@ -63,7 +63,22 @@ def update_event(event_with_updates):
         elif event_without_updates is None:
             raise CustomExceptionFactory().create_exception('event_not_found')
         else:
-            event_without_updates.update(event_with_updates)
+            updated_event =  event_without_updates.update(event_with_updates)
+
+            updated_event_obj = {
+                "id": updated_event.event_id,
+                "host_id": updated_event.host.user_id,
+                "title": updated_event.title,
+                "description": updated_event.description,
+                "start_date": updated_event.start_date,
+                "end_date": updated_event.end_date,
+                "location": updated_event.location,
+                "capacity": updated_event.capacity,
+                "price": updated_event.price,
+                "attending": 'Host'
+            }
+
+            return updated_event_obj
     else:
         raise CustomExceptionFactory().create_exception('user_not_logged_in')
 
