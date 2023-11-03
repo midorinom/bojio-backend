@@ -4,10 +4,10 @@ from service.event_service import *
 from utilities.custom_exception_factory import *
 import traceback
 
-@app.route('/event/all-events', methods=['GET'])
-def retrieve_all_events():
+@app.route('/event/all-available-events', methods=['GET'])
+def retrieve_all_available_events():
     try:
-        events = get_all_events()
+        events = get_available_events()
     except UserNotLoggedInException as errerMsg:
         return {
             "status": "error",
