@@ -9,65 +9,58 @@ from flask import session, redirect, url_for
 # Create a SQLAlchemy engine to connect to your MySQL database
 
 
-@app.route('/profile', methods=['GET'])
-def display_profile():
-    if 'loggedin' in session:
-        user_id = session['id']
-        user = User.display_profile(user_id)  # Use the new method
-        if user:
-            return {
-                "status": "success",
-                "data": user
-            }, 200
-        else:
-            return {
-                "status": "error",
-                "message": "User not found"
-            }, 404
-    else:
-        return {
-            "status": "error",
-            "message": "User not logged in"
-        }, 401
-    
 @app.route('/profile', methods=['POST'])
-def update_profile():
-    if 'loggedin' in session:
-        user_id = session['id']
-        data = request.get_json()
-        new_username = data.get('username')
-        new_email = data.get('email')
-        new_password = data.get('password')
+def display_profile():
 
-        if not new_username or not new_email:
-            return {
-                "status": "error",
-                "message": "Please provide a new username and email"
-            }, 400
-
-        user = User.display_profile(user_id)  # Use the new method
-        if not user:
-            return {
-                "status": "error",
-                "message": "User not found"
-            }, 404
-
-        try:
-            user.update_user(user_id, new_username, new_email)  # Pass user_id
-            return {
-                "status": "success",
-                "message": "Profile updated successfully"
-            }, 200
-        except Exception as e:
-            return {
-                "status": "error",
-                "message": "Error updating the profile. Please try again."
-            }, 500
+    data = request.get_json()
+    user_id = data.get('user_id')
+    
+    user = User.display_profile(user_id)  # Use the new method
+    if user:
+        return {
+            "status": "success",
+            "data": user
+        }, 200
     else:
         return {
             "status": "error",
-            "message": "User not logged in"
-        }, 401
+            "message": "User not found or logged in"
+        }, 404
+    
+    
+@app.route('/updateprofile', methods=['POST'])
+def update_profile():
+        
+    data = request.get_json()
+    user_id = data.get('user_id')
+    new_username = data.get('username')
+    new_email = data.get('email')
+    new_password = data.get('password')
+
+    if not new_username or not new_email:
+        return {
+            "status": "error",
+            "message": "Please provide a new username and email"
+        }, 400
+
+    user = User.display_profile(user_id)  # Use the new method
+    if not user:
+        return {
+            "status": "error",
+            "message": "User not found or logged in"
+        }, 404
+
+    try:
+        user.update_user(user_id, new_username, new_email)  # Pass user_id
+        return {
+            "status": "success",
+            "message": "Profile updated successfully"
+        }, 200
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": "Error updating the profile. Please try again."
+        }, 500
    
 @app.route('/login', methods=['POST'])
 def login():
@@ -88,7 +81,8 @@ def login():
                 msg = 'Logged in successfully!'
                 return {
                         "status": "success",
-                        "message": msg
+                        "message": msg,
+                        "id": user.user_id
                     }, 200
                 #return render_template('index.html', msg=msg)
             else:
@@ -103,8 +97,6 @@ def login():
             "message": msg
         }, 400
     
-     
-
 @app.route('/logout', methods=['GET'])
 def logout():
     User.logout_user()  # Call the logout method from your User model
