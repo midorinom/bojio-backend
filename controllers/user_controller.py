@@ -11,9 +11,9 @@ from flask import session, redirect, url_for
 @app.route('/change_password', methods=['POST'])
 def change_password():
     
-    user_id = session['id']
     data = request.get_json()
-    new_password = data.get('new_password')
+    user_id = data.get('user_id')
+    new_password = data.get('password')
 
     if not new_password:
         return {
@@ -22,6 +22,7 @@ def change_password():
             }, 400
 
     user = User.display_profile(user_id)
+
     if not user:
         return {
             "status": "error",
@@ -29,7 +30,7 @@ def change_password():
             }, 404
 
     try:
-        user.change_password(new_password)
+        user.change_password(user_id,new_password)
         return {
             "status": "success",
             "message": "Password changed successfully"
