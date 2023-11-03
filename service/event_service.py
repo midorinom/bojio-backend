@@ -5,8 +5,8 @@ from flask import session
 from datetime import datetime
 
 # Business logic lies here
-
-def get_all_events():
+    
+def get_available_events():
     if 'loggedin' in session:
         user_id = session['id']
         events = Event.get_all_events()
@@ -15,24 +15,8 @@ def get_all_events():
         events_list = []
 
         for event in events:
-            event_obj = {
-                "event_id": event.event_id,
-                "host_id": event.host.user_id,
-                "title": event.title,
-                "description": event.description,
-                "start_date": event.start_date,
-                "end_date": event.end_date,
-                "location": event.location,
-                "capacity": event.capacity,
-                "price": event.price,
-                "attending": False
-            }
-            # Only append events that is not hosted by current user
-            if event not in user.events_as_host:
-                if event in user.events_as_attendee:
-                    event_obj['attending'] = True
-            
-                events_list.append(event_obj)
+            if event not in user.events_as_host and event not in user.events_as_attendee:
+                events_list.append(event)
 
         return events_list
     else:
