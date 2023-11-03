@@ -22,6 +22,14 @@ class User(db.Model):
         return f"<User(user_id={self.user_id}, username='{self.username}', email='{self.email}', registration_date='{self.registration_date}')>"
 
     @classmethod
+    def change_password(cls, user_id, new_password):
+        user = cls.query.get(user_id)
+        if user:
+            hashed_password = generate_password_hash(new_password).decode('utf-8')
+            user.password = hashed_password
+            db.session.commit()
+            
+    @classmethod
     def create_user(cls, username, email, password):
         hashed_password = generate_password_hash(password).decode('utf-8')
         user = cls(username=username, email=email, password=hashed_password)
