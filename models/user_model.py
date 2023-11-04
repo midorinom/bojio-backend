@@ -54,9 +54,9 @@ class User(db.Model):
 
     @classmethod
     def logout_user(cls):
-        session.pop('loggedin', None)
-        session.pop('id', None)
-        session.pop('username', None)
+        session.pop('loggedin')
+        session.pop('id')
+        session.pop('username')
 
     @classmethod
     def display_profile(cls, user_id):
