@@ -24,7 +24,6 @@ app.config['SESSION_SQLALCHEMY'] = db
 session = Session(app)
 CORS(app, supports_credentials=True)
 
-#app.secret_key = 'bojio'
 from controllers import demo_controller, user_controller, event_controller
 from models import user_model, demo_model, event_model
 
