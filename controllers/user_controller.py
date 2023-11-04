@@ -43,7 +43,7 @@ def change_password():
         }, 500
     
     
-@app.route('/profile', methods=['POST'])
+@app.route('/profile', methods=['GET'])
 def display_profile():
 
     user_id = session['id']
@@ -51,7 +51,10 @@ def display_profile():
     if user:
         return {
             "status": "success",
-            "data": user
+            "data": {
+                "username": user.username,
+                "email": user.email
+            }
         }, 200
     else:
         return {
