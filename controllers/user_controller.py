@@ -46,9 +46,7 @@ def change_password():
 @app.route('/profile', methods=['POST'])
 def display_profile():
 
-    data = request.get_json()
-    user_id = data.get('user_id')
-    
+    user_id = session['id']
     user = User.display_profile(user_id)  # Use the new method
     if user:
         return {
@@ -58,8 +56,8 @@ def display_profile():
     else:
         return {
             "status": "error",
-            "message": "User not found or logged in"
-        }, 404
+            "message": "User not logged in"
+        }, 401
     
     
 @app.route('/updateprofile', methods=['POST'])
@@ -177,3 +175,19 @@ def register():
         "status": "error",
         "message": msg
     }, 400
+
+@app.route('/get-session', methods=['GET'])
+def get_session():
+
+    user_id = session.get('id')
+    
+    if user_id:
+        return {
+            "status": "success",
+            "data": True
+        }, 200
+    else:
+        return {
+            "status": "error",
+            "message": "User not logged in"
+        }, 401
