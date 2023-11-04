@@ -8,8 +8,42 @@ from models.user_model import User
 from flask import session, redirect, url_for
 # Create a SQLAlchemy engine to connect to your MySQL database
 
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    
+    data = request.get_json()
+    user_id = data.get('user_id')
+    new_password = data.get('password')
 
-@app.route('/profile', methods=['GET'])
+    if not new_password:
+        return {
+            "status": "error",
+             "message": "Please provide a new password"
+            }, 400
+
+    user = User.display_profile(user_id)
+
+    if not user:
+        return {
+            "status": "error",
+            "message": "User not found"
+            }, 404
+
+    try:
+        user.change_password(user_id,new_password)
+        return {
+            "status": "success",
+            "message": "Password changed successfully"
+        }, 200
+    
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": "Error changing the password. Please try again."
+        }, 500
+    
+    
+@app.route('/profile', methods=['POST'])
 def display_profile():
 
     user_id = session['id']
