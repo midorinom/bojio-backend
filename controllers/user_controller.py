@@ -12,7 +12,7 @@ from flask import session, redirect, url_for
 def change_password():
     
     data = request.get_json()
-    user_id = data.get('user_id')
+    user_id = session['id']
     new_password = data.get('password')
 
     if not new_password:
@@ -67,10 +67,10 @@ def display_profile():
 def update_profile():
         
     data = request.get_json()
-    user_id = data.get('user_id')
+    user_id = session['id']
     new_username = data.get('username')
     new_email = data.get('email')
-    new_password = data.get('password')
+    # new_password = data.get('password')
 
     if not new_username or not new_email:
         return {
