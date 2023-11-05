@@ -5,7 +5,10 @@ from flask import session
 from datetime import datetime
 
 # Business logic lies here
-    
+
+def get_all_events():
+    return Event.get_all_events()
+
 def get_available_events():
     if 'loggedin' in session:
         user_id = session['id']
