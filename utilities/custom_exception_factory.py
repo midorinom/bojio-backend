@@ -33,6 +33,10 @@ class UserIsHostException(Exception):
     def __init__(self, message='User is the host for this event'):
         super(UserIsHostException, self).__init__(message)
 
+class EventAtMaxCapacityException(Exception):
+    def __init__(self, message='Event capacity has been reached'):
+        super(EventAtMaxCapacityException, self).__init__(message)
+
 # Generic exceptions
 class IdNotFoundException(Exception):
     def __init__(self, message='ID cannot be found'):
@@ -59,3 +63,5 @@ class CustomExceptionFactory:
                 return UserIsNotHostException()
             case 'user_is_host':
                 return UserIsHostException()
+            case 'event_at_max_capacity':
+                return EventAtMaxCapacityException()

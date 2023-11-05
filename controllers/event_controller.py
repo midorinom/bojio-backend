@@ -173,7 +173,7 @@ def join():
             "status": "error",
             "message": str(errerMsg)
         }, 404
-    except AlreadyAttendingException as errerMsg:
+    except (AlreadyAttendingException, EventAtMaxCapacityException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
