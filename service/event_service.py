@@ -15,8 +15,21 @@ def get_available_events():
         events_list = []
 
         for event in events:
+            event_obj = {
+                "event_id": event.event_id,
+                "host_id": event.host.user_id,
+                "title": event.title,
+                "description": event.description,
+                "start_date": event.start_date,
+                "end_date": event.end_date,
+                "location": event.location,
+                "capacity": event.capacity,
+                "price": event.price,
+                "attendees": len(event.attendees)
+            }
+
             if event not in user.events_as_host and event not in user.events_as_attendee:
-                events_list.append(event)
+                events_list.append(event_obj)
 
         return events_list
     else:
@@ -31,8 +44,21 @@ def get_all_events_as_attendee():
         events_list = []
 
         for event in events:
+            event_obj = {
+                "event_id": event.event_id,
+                "host_id": event.host.user_id,
+                "title": event.title,
+                "description": event.description,
+                "start_date": event.start_date,
+                "end_date": event.end_date,
+                "location": event.location,
+                "capacity": event.capacity,
+                "price": event.price,
+                "attendees": len(event.attendees)
+            }
+
             if event in user.events_as_attendee:
-                events_list.append(event)
+                events_list.append(event_obj)
 
         return events_list
     else:
@@ -47,8 +73,21 @@ def get_all_events_as_host():
         events_list = []
 
         for event in events:
+            event_obj = {
+                "event_id": event.event_id,
+                "host_id": event.host.user_id,
+                "title": event.title,
+                "description": event.description,
+                "start_date": event.start_date,
+                "end_date": event.end_date,
+                "location": event.location,
+                "capacity": event.capacity,
+                "price": event.price,
+                "attendees": len(event.attendees)
+            }
+
             if event in user.events_as_host:
-                events_list.append(event)
+                events_list.append(event_obj)
 
         return events_list
     else:
