@@ -210,9 +210,9 @@ def join():
 @app.route('/event/quit', methods=['POST'])
 def quit():
     try:
-        data = request.get_json()
+        event_id = request.get_json()['event_id']
         # Calls service to perform business logic
-        quit_event(data)
+        quit_event(event_id)
     except (UserNotLoggedInException, UserIsHostException) as errerMsg:
         return {
             "status": "error",
@@ -239,6 +239,39 @@ def quit():
         return {
             "status": "success",
             "message": "Withdrawn from event successfully"
+        }, 200
+
+@app.route('/event/send-invitation', methods=['POST'])
+def send_invitation():
+    try:
+        data = request.get_json()
+        send_event_invite(data)
+    except UserNotLoggedInException as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 401
+    except (UserNotFoundException, EventNotFoundException) as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 404
+    except (InvitorIsAlsoInviteeException, InviteeAlreadyReceivedException, InviteeIsHostException) as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 409
+    except Exception:
+        rollback_db()
+        return {
+            "status": "error",
+            "message": "Error occurred"
+        }, 500
+    else:
+        db.session.commit()
+        return {
+            "status": "success",
+            "message": "Invitation sent successfully"
         }, 200
 
 def rollback_db():

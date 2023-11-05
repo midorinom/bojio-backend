@@ -37,6 +37,18 @@ class EventAtMaxCapacityException(Exception):
     def __init__(self, message='Event capacity has been reached'):
         super(EventAtMaxCapacityException, self).__init__(message)
 
+class InvitorIsAlsoInviteeException(Exception):
+    def __init__(self, message='User cannot invite themselve'):
+        super(InvitorIsAlsoInviteeException, self).__init__(message)
+
+class InviteeAlreadyReceivedException(Exception):
+    def __init__(self, message='Invitee already received user\'s invite'):
+        super(InviteeAlreadyReceivedException, self).__init__(message)
+
+class InviteeIsHostException(Exception):
+    def __init__(self, message='Invitee is the event\'s host'):
+        super(InviteeIsHostException, self).__init__(message)
+
 # Generic exceptions
 class IdNotFoundException(Exception):
     def __init__(self, message='ID cannot be found'):
@@ -65,3 +77,9 @@ class CustomExceptionFactory:
                 return UserIsHostException()
             case 'event_at_max_capacity':
                 return EventAtMaxCapacityException()
+            case 'invitor_is_also_invitee':
+                return InvitorIsAlsoInviteeException()
+            case 'invitee_already_received':
+                return InviteeAlreadyReceivedException()
+            case 'invitee_is_host':
+                return InviteeIsHostException()

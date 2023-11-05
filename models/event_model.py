@@ -15,6 +15,7 @@ class Event(db.Model):
     location:str = db.Column(db.Text, nullable = False)
     capacity:int = db.Column(db.Integer, nullable = False)
     price:Decimal = db.Column(db.Numeric(10, 2), nullable = False)
+    invitations = db.relationship('EventInvitation', backref = 'event')
 
     def __init__(self, host, title, description, start_date, end_date, location, capacity, price):
         self.host = host
