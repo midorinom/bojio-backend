@@ -5,7 +5,10 @@ from flask import session
 from datetime import datetime
 
 # Business logic lies here
-    
+
+def get_all_events():
+    return Event.get_all_events()
+
 def get_available_events():
     if 'loggedin' in session:
         user_id = session['id']
@@ -190,6 +193,8 @@ def join_event(event_id):
             raise CustomExceptionFactory().create_exception('user_is_host')
         elif event in user.events_as_attendee:
             raise CustomExceptionFactory().create_exception('already_attending')
+        elif len(event.attendees) >= event.capacity:
+            raise CustomExceptionFactory().create_exception('event_at_max_capacity')
         else:
             user.events_as_attendee.append(event)
     else:

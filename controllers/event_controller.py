@@ -4,6 +4,22 @@ from service.event_service import *
 from utilities.custom_exception_factory import *
 import traceback
 
+@app.route('/event/all-events', methods=['GET'])
+def retrieve_all_events():
+    try:
+        events = get_all_events()
+    except Exception:
+        rollback_db()
+        return {
+            "status": "error",
+            "message": "Error occurred"
+        }, 500
+    else:
+        return {
+            "status": "success",
+            "data": events
+        }, 200
+
 @app.route('/event/all-available-events', methods=['GET'])
 def retrieve_all_available_events():
     try:
@@ -173,7 +189,7 @@ def join():
             "status": "error",
             "message": str(errerMsg)
         }, 404
-    except AlreadyAttendingException as errerMsg:
+    except (AlreadyAttendingException, EventAtMaxCapacityException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
