@@ -17,6 +17,8 @@ class User(db.Model):
     registration_date:DateTime = db.Column(db.DateTime, default=func.now(), nullable=False)
     events_as_attendee = db.relationship('Event', secondary = event_attendance, backref = 'attendees')
     events_as_host = db.relationship('Event', backref = 'host')
+    invitations_as_invitee = db.relationship('EventInvitation', foreign_keys = 'EventInvitation.invitee_id', backref = 'invitee')
+    invitations_as_inviter = db.relationship('EventInvitation', foreign_keys = 'EventInvitation.inviter_id', backref = 'inviter')
 
     def __repr__(self):
         return f"<User(user_id={self.user_id}, username='{self.username}', email='{self.email}', registration_date='{self.registration_date}')>"

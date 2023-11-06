@@ -1,5 +1,6 @@
 from models.event_model import Event
 from models.user_model import User
+from models.event_invitation_model import EventInvitation
 from utilities.custom_exception_factory import CustomExceptionFactory
 from flask import session
 from datetime import datetime
@@ -200,10 +201,9 @@ def join_event(event_id):
     else:
         raise CustomExceptionFactory().create_exception('user_not_logged_in')
 
-def quit_event(data):
+def quit_event(event_id):
     if 'loggedin' in session:
         user_id = session['id']
-        event_id = data['event_id']
         user = User.get_user(user_id)
         event = Event.get_event(event_id)
 
@@ -215,5 +215,37 @@ def quit_event(data):
             raise CustomExceptionFactory().create_exception('already_withdrawn')
         else:
             user.events_as_attendee.remove(event)
+    else:
+        raise CustomExceptionFactory().create_exception('user_not_logged_in')
+
+def send_event_invite(data):
+    if 'loggedin' in session:
+        user_id = session['id']
+        invitee_id = data['invitee_id']
+        event_id = data['event_id']
+
+        invitee = User.get_user(invitee_id)
+        event = Event.get_event(event_id)
+
+        print(invitee.invitations_as_invitee)
+
+        if user_id == invitee_id:
+            raise CustomExceptionFactory().create_exception('invitor_is_also_invitee')
+        elif invitee is None:
+            raise CustomExceptionFactory().create_exception('user_not_found')
+        elif event is None:
+            raise CustomExceptionFactory().create_exception('event_not_found')
+        elif event in invitee.events_as_host:
+            raise CustomExceptionFactory().create_exception('invitee_is_host')
+        else:
+            for invitation in invitee.invitations_as_invitee:
+                if invitation.inviter_id == user_id and invitation.event_id == event_id:
+                    raise CustomExceptionFactory().create_exception('invitee_already_received')
+                
+            EventInvitation.create_invitation(
+                inviter_id = user_id,
+                invitee_id = invitee_id,
+                event_id = event_id
+            )
     else:
         raise CustomExceptionFactory().create_exception('user_not_logged_in')

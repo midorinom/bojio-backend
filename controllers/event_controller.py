@@ -179,21 +179,16 @@ def join():
         event_id = request.get_json()['event_id']
         # Calls service to perform business logic
         join_event(event_id)
-    except (UserNotLoggedInException, UserIsHostException) as errerMsg:
+    except UserNotLoggedInException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except EventNotFoundException as errerMsg:
+    except (AlreadyAttendingException, EventAtMaxCapacityException, UserIsHostException, EventNotFoundException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
-        }, 404
-    except (AlreadyAttendingException, EventAtMaxCapacityException) as errerMsg:
-        return {
-            "status": "error",
-            "message": str(errerMsg)
-        }, 409
+        }, 400
     except Exception:
         rollback_db()
         return {
@@ -210,20 +205,48 @@ def join():
 @app.route('/event/quit', methods=['POST'])
 def quit():
     try:
-        data = request.get_json()
+        event_id = request.get_json()['event_id']
         # Calls service to perform business logic
-        quit_event(data)
-    except (UserNotLoggedInException, UserIsHostException) as errerMsg:
+        quit_event(event_id)
+    except UserNotLoggedInException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except EventNotFoundException as errerMsg:
+    except (UserIsHostException, EventNotFoundException, AlreadyWithdrawnException) as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 400
+    except Exception:
+        rollback_db()
+        return {
+            "status": "error",
+            "message": "Error occurred"
+        }, 500
+    else:
+        db.session.commit()
+        return {
+            "status": "success",
+            "message": "Withdrawn from event successfully"
+        }, 200
+
+@app.route('/event/send-invitation', methods=['POST'])
+def send_invitation():
+    try:
+        data = request.get_json()
+        send_event_invite(data)
+    except UserNotLoggedInException as errerMsg:
+        return {
+            "status": "error",
+            "message": str(errerMsg)
+        }, 401
+    except (UserNotFoundException, EventNotFoundException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 404
-    except AlreadyWithdrawnException as errerMsg:
+    except (InvitorIsAlsoInviteeException, InviteeAlreadyReceivedException, InviteeIsHostException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
@@ -238,7 +261,7 @@ def quit():
         db.session.commit()
         return {
             "status": "success",
-            "message": "Withdrawn from event successfully"
+            "message": "Invitation sent successfully"
         }, 200
 
 def rollback_db():
