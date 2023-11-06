@@ -190,6 +190,8 @@ def join_event(event_id):
 
         if event is None:
             raise CustomExceptionFactory().create_exception('event_not_found')
+        elif event.end_date <= datetime.now().date():
+            raise CustomExceptionFactory().create_exception('event_has_ended')
         elif event.host.user_id == session['id']:
             raise CustomExceptionFactory().create_exception('user_is_host')
         elif event in user.events_as_attendee:
