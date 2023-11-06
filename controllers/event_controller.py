@@ -179,21 +179,16 @@ def join():
         event_id = request.get_json()['event_id']
         # Calls service to perform business logic
         join_event(event_id)
-    except (UserNotLoggedInException, UserIsHostException) as errerMsg:
+    except UserNotLoggedInException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except EventNotFoundException as errerMsg:
+    except (AlreadyAttendingException, EventAtMaxCapacityException, UserIsHostException, EventNotFoundException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
-        }, 404
-    except (AlreadyAttendingException, EventAtMaxCapacityException) as errerMsg:
-        return {
-            "status": "error",
-            "message": str(errerMsg)
-        }, 409
+        }, 400
     except Exception:
         rollback_db()
         return {
@@ -213,21 +208,16 @@ def quit():
         event_id = request.get_json()['event_id']
         # Calls service to perform business logic
         quit_event(event_id)
-    except (UserNotLoggedInException, UserIsHostException) as errerMsg:
+    except UserNotLoggedInException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except EventNotFoundException as errerMsg:
+    except (UserIsHostException, EventNotFoundException, AlreadyWithdrawnException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
-        }, 404
-    except AlreadyWithdrawnException as errerMsg:
-        return {
-            "status": "error",
-            "message": str(errerMsg)
-        }, 409
+        }, 400
     except Exception:
         rollback_db()
         return {
