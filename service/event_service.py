@@ -8,7 +8,25 @@ from datetime import datetime
 # Business logic lies here
 
 def get_all_events():
-    return Event.get_all_events()
+    events = Event.get_all_events()
+    events_list = []
+
+    for event in events:
+        event_obj = {
+            "event_id": event.event_id,
+            "host_id": event.host.user_id,
+            "title": event.title,
+            "description": event.description,
+            "start_date": event.start_date.strftime('%d-%m-%Y'),
+            "end_date": event.end_date.strftime('%d-%m-%Y'),
+            "location": event.location,
+            "capacity": event.capacity,
+            "price": event.price,
+            "attendees": len(event.attendees)
+        }
+        events_list.append(event_obj)
+    
+    return events_list
 
 def get_available_events():
     if 'loggedin' in session:
@@ -24,8 +42,8 @@ def get_available_events():
                 "host_id": event.host.user_id,
                 "title": event.title,
                 "description": event.description,
-                "start_date": event.start_date,
-                "end_date": event.end_date,
+                "start_date": event.start_date.strftime('%d-%m-%Y'),
+                "end_date": event.end_date.strftime('%d-%m-%Y'),
                 "location": event.location,
                 "capacity": event.capacity,
                 "price": event.price,
@@ -53,8 +71,8 @@ def get_all_events_as_attendee():
                 "host_id": event.host.user_id,
                 "title": event.title,
                 "description": event.description,
-                "start_date": event.start_date,
-                "end_date": event.end_date,
+                "start_date": event.start_date.strftime('%d-%m-%Y'),
+                "end_date": event.end_date.strftime('%d-%m-%Y'),
                 "location": event.location,
                 "capacity": event.capacity,
                 "price": event.price,
@@ -82,8 +100,8 @@ def get_all_events_as_host():
                 "host_id": event.host.user_id,
                 "title": event.title,
                 "description": event.description,
-                "start_date": event.start_date,
-                "end_date": event.end_date,
+                "start_date": event.start_date.strftime('%d-%m-%Y'),
+                "end_date": event.end_date.strftime('%d-%m-%Y'),
                 "location": event.location,
                 "capacity": event.capacity,
                 "price": event.price,
