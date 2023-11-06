@@ -5,7 +5,7 @@ class DemoMessageExistsException(Exception):
 
 # User exceptions
 class UserNotFoundException(Exception):
-    def __init__(self, message='User cannot be found'):
+    def __init__(self, message='user_not_found'):
         super(UserNotFoundException, self).__init__(message)
 
 class UserNotLoggedInException(Exception):
@@ -26,7 +26,7 @@ class AlreadyWithdrawnException(Exception):
         super(AlreadyWithdrawnException, self).__init__(message)
 
 class UserIsNotHostException(Exception):
-    def __init__(self, message='User is not the host for this event'):
+    def __init__(self, message='user_is_not_host'):
         super(UserIsNotHostException, self).__init__(message)
 
 class UserIsHostException(Exception):
@@ -36,6 +36,10 @@ class UserIsHostException(Exception):
 class EventAtMaxCapacityException(Exception):
     def __init__(self, message='event_at_max_capacity'):
         super(EventAtMaxCapacityException, self).__init__(message)
+
+class EventHasEndedException(Exception):
+    def __init__(self, message='event_has_started'):
+        super(EventHasEndedException, self).__init__(message)
 
 class InvitorIsAlsoInviteeException(Exception):
     def __init__(self, message='User cannot invite themselve'):
@@ -83,3 +87,5 @@ class CustomExceptionFactory:
                 return InviteeAlreadyReceivedException()
             case 'invitee_is_host':
                 return InviteeIsHostException()
+            case 'event_has_ended':
+                return EventHasEndedException()

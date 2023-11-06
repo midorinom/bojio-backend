@@ -116,21 +116,16 @@ def update():
     try:
         event_with_updates = request.get_json()
         updated_event = update_event(event_with_updates)
-    except (UserNotLoggedInException, UserIsNotHostException) as errerMsg:
+    except UserNotLoggedInException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except ValueError as errerMsg:
+    except (UserIsNotHostException, EventNotFoundException, ValueError) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 400
-    except EventNotFoundException as errerMsg:
-        return {
-            "status": "error",
-            "message": str(errerMsg)
-        }, 404
     except Exception:
         rollback_db()
         return {
@@ -150,16 +145,16 @@ def delete():
         event_id = request.get_json()['event_id']
         # Calls service to perform business logic
         delete_event(event_id)
-    except (UserNotLoggedInException, UserIsNotHostException) as errerMsg:
+    except UserNotLoggedInException as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except EventNotFoundException as errerMsg:
+    except (EventNotFoundException, UserIsNotHostException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
-        }, 404
+        }, 400
     except Exception:
         rollback_db()
         return {
@@ -184,7 +179,7 @@ def join():
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except (AlreadyAttendingException, EventAtMaxCapacityException, UserIsHostException, EventNotFoundException) as errerMsg:
+    except (AlreadyAttendingException, EventAtMaxCapacityException, UserIsHostException, EventNotFoundException, EventHasEndedException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
@@ -241,16 +236,11 @@ def send_invitation():
             "status": "error",
             "message": str(errerMsg)
         }, 401
-    except (UserNotFoundException, EventNotFoundException) as errerMsg:
+    except (UserNotFoundException, EventNotFoundException, InvitorIsAlsoInviteeException, InviteeAlreadyReceivedException, InviteeIsHostException) as errerMsg:
         return {
             "status": "error",
             "message": str(errerMsg)
-        }, 404
-    except (InvitorIsAlsoInviteeException, InviteeAlreadyReceivedException, InviteeIsHostException) as errerMsg:
-        return {
-            "status": "error",
-            "message": str(errerMsg)
-        }, 409
+        }, 400
     except Exception:
         rollback_db()
         return {
