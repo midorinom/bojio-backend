@@ -126,14 +126,16 @@ def create_event(new_event):
         capacity = new_event['capacity']
         price = new_event['price']
 
-        if not title or not description or not start_date or not end_date or not location or not capacity or not price:
-            raise ValueError('Make sure all required fields are provided')
+        if not title or not description or not start_date or not end_date or not location or not capacity:
+            raise ValueError('missing_fields')
+        elif price == None:
+            raise ValueError('incorrect_price')
         elif start_date <= datetime.now() or end_date <= datetime.now():
-            raise ValueError('Start and end date cannot be on or before today')
-        elif not isinstance(capacity, int):
-            raise ValueError('Capacity is not an integer')
-        elif not str(price).isdecimal():
-            raise ValueError('Price is not decimal')
+            raise ValueError('start_end_date_before_today')
+        elif capacity < 1:
+            raise ValueError('capacity_less_than_1')
+        elif price < 0:
+            raise ValueError('price_less_than_0')
         else:
             return Event.create_event(
                 host = host,
