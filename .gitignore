@@ -1,10 +1,6 @@
-/__pycache__
+__pycache__
+.pytest_cache
 /venv
 /env
 /.DS_Store
 /.vscode
-controllers/__pycache__
-models/__pycache__
-service/__pycache__
-utilities/__pycache__
-config.py

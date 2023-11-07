@@ -1,4 +1,4 @@
-from app import db
+from project.extensions import db
 
 event_attendance = db.Table('event_attendance',
     db.Column('user_id', db.Integer, db.ForeignKey('users.user_id')),

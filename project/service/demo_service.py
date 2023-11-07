@@ -1,5 +1,5 @@
-from models.demo_model import Demo
-from utilities.custom_exception_factory import CustomExceptionFactory
+from project.models.demo_model import Demo
+from project.utilities.custom_exception_factory import CustomExceptionFactory
 
 def get_message():
     return Demo.get_all_message()

@@ -1,7 +1,7 @@
-from models.event_model import Event
-from models.user_model import User
-from models.event_invitation_model import EventInvitation
-from utilities.custom_exception_factory import CustomExceptionFactory
+from project.models.event_model import Event
+from project.models.user_model import User
+from project.models.event_invitation_model import EventInvitation
+from project.utilities.custom_exception_factory import CustomExceptionFactory
 from flask import session
 from datetime import datetime
 

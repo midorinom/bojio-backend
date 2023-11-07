@@ -1,4 +1,4 @@
-from app import db
+from project.extensions import db
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal

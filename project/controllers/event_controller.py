@@ -1,10 +1,18 @@
-from app import app, db
-from flask import request
-from service.event_service import *
-from utilities.custom_exception_factory import *
+from project.extensions import db
+from flask import Blueprint, request
+from project.service.event_service import *
+from project.utilities.custom_exception_factory import *
 import traceback
 
-@app.route('/event/all-events', methods=['GET'])
+main_event = Blueprint("main_event", __name__)
+
+@main_event.route('/event/test', methods=['GET'])
+def event_test():
+    return {
+        "message": "hello"
+    }
+
+@main_event.route('/event/all-events', methods=['GET'])
 def retrieve_all_events():
     try:
         events = get_all_events()
@@ -20,7 +28,7 @@ def retrieve_all_events():
             "data": events
         }, 200
 
-@app.route('/event/all-available-events', methods=['GET'])
+@main_event.route('/event/all-available-events', methods=['GET'])
 def retrieve_all_available_events():
     try:
         events = get_available_events()
@@ -41,7 +49,7 @@ def retrieve_all_available_events():
             "data": events
         }, 200
 
-@app.route('/event/all-attending-events', methods=['GET'])
+@main_event.route('/event/all-attending-events', methods=['GET'])
 def retrieve_all_attending_events():
     try:
         events = get_all_events_as_attendee()
@@ -62,7 +70,7 @@ def retrieve_all_attending_events():
             "data": events
         }, 200
     
-@app.route('/event/all-events-as-host', methods=['GET'])
+@main_event.route('/event/all-events-as-host', methods=['GET'])
 def retrieve_all_events_as_host():
     try:
         events = get_all_events_as_host()
@@ -83,7 +91,7 @@ def retrieve_all_events_as_host():
             "data": events
         }, 200
 
-@app.route('/event/create', methods=['POST'])
+@main_event.route('/event/create', methods=['POST'])
 def create():
     try:
         new_event = request.get_json()
@@ -111,7 +119,7 @@ def create():
             "data": created_event_obj
         }, 200
 
-@app.route('/event/update', methods=['POST'])
+@main_event.route('/event/update', methods=['POST'])
 def update():
     try:
         event_with_updates = request.get_json()
@@ -139,7 +147,7 @@ def update():
             "data": updated_event
         }, 200
     
-@app.route('/event/delete', methods=['POST'])
+@main_event.route('/event/delete', methods=['POST'])
 def delete():
     try:
         event_id = request.get_json()['event_id']
@@ -168,7 +176,7 @@ def delete():
             "message": "Event successfully deleted"
         }, 200
 
-@app.route('/event/join', methods=['POST'])
+@main_event.route('/event/join', methods=['POST'])
 def join():
     try:
         event_id = request.get_json()['event_id']
@@ -197,7 +205,7 @@ def join():
             "message": "Event successfully joined"
         }, 200
     
-@app.route('/event/quit', methods=['POST'])
+@main_event.route('/event/quit', methods=['POST'])
 def quit():
     try:
         event_id = request.get_json()['event_id']
@@ -226,7 +234,7 @@ def quit():
             "message": "Withdrawn from event successfully"
         }, 200
 
-@app.route('/event/send-invitation', methods=['POST'])
+@main_event.route('/event/send-invitation', methods=['POST'])
 def send_invitation():
     try:
         data = request.get_json()
@@ -255,6 +263,6 @@ def send_invitation():
         }, 200
 
 def rollback_db():
-    if app.debug == True:
+    if main_event.debug == True:
         print(traceback.format_exc())
     db.session.rollback()

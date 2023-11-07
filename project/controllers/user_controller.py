@@ -1,14 +1,15 @@
 from datetime import date
-from flask import render_template, request, redirect, url_for, session
-from app import app, db
+from flask import Blueprint, render_template, request, redirect, url_for, session
+from project.extensions import db
 import re 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from models.user_model import User
+from project.models.user_model import User
 from flask import session, redirect, url_for
-# Create a SQLAlchemy engine to connect to your MySQL database
 
-@app.route('/change_password', methods=['POST'])
+main_user = Blueprint("main_user", __name__)
+
+@main_user.route('/change_password', methods=['POST'])
 def change_password():
     
     data = request.get_json()
@@ -43,7 +44,7 @@ def change_password():
         }, 500
     
     
-@app.route('/profile', methods=['GET'])
+@main_user.route('/profile', methods=['GET'])
 def display_profile():
 
     user_id = session['id']
@@ -63,7 +64,7 @@ def display_profile():
         }, 401
     
     
-@app.route('/updateprofile', methods=['POST'])
+@main_user.route('/updateprofile', methods=['POST'])
 def update_profile():
         
     data = request.get_json()
@@ -97,7 +98,7 @@ def update_profile():
             "message": "Error updating the profile. Please try again."
         }, 500
    
-@app.route('/login', methods=['POST'])
+@main_user.route('/login', methods=['POST'])
 def login():
     msg = ''
     
@@ -132,7 +133,7 @@ def login():
             "message": msg
         }, 400
     
-@app.route('/logout', methods=['GET'])
+@main_user.route('/logout', methods=['GET'])
 def logout():
     User.logout_user()  # Call the logout method from your User model
     msg = 'Logout successfully!'
@@ -141,7 +142,7 @@ def logout():
                         "message": msg
                     }, 200
  
-@app.route('/register', methods=['POST'])
+@main_user.route('/register', methods=['POST'])
 def register():
     msg = ''
     if request.method == 'POST':
@@ -179,7 +180,7 @@ def register():
         "message": msg
     }, 400
 
-@app.route('/get-session', methods=['GET'])
+@main_user.route('/get-session', methods=['GET'])
 def get_session():
 
     user_id = session.get('id')

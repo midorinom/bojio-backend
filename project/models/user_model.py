@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
-from app import db
+from project.extensions import db
 from dataclasses import dataclass
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask import session

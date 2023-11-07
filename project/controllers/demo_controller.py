@@ -1,10 +1,19 @@
-from app import app, db
-from flask import jsonify, request
-from service.demo_service import get_message, add_message, update_message, delete_message
-from utilities.custom_exception_factory import DemoMessageExistsException, IdNotFoundException
+#from app import app, db
+from project.extensions import db
+from flask import Blueprint, jsonify, request
+from project.service.demo_service import get_message, add_message, update_message, delete_message
+from project.utilities.custom_exception_factory import DemoMessageExistsException, IdNotFoundException
 import traceback
 
-@app.route('/demo/get', methods=['GET'])
+main = Blueprint("main_demo", __name__)
+
+@main.route('/demo/test', methods=['GET'])
+def event_test():
+    return {
+        "message": "hello"
+    }, 200
+
+@main.route('/demo/get', methods=['GET'])
 def demo_get():
     try:
         # Calls service to perform business logic
@@ -18,7 +27,7 @@ def demo_get():
     else:
         return jsonify(result)
 
-@app.route('/demo/add', methods=['POST'])
+@main.route('/demo/add', methods=['POST'])
 def demo_add():
     try:
         data = request.get_json()
@@ -39,7 +48,7 @@ def demo_add():
         db.session.commit()
         return jsonify(added_msg_obj)
     
-@app.route('/demo/update', methods=['POST'])
+@main.route('/demo/update', methods=['POST'])
 def demo_update():
     try:
         data = request.get_json()
@@ -68,7 +77,7 @@ def demo_update():
             "message": "Successfully updated"
         }, 200
 
-@app.route('/demo/delete', methods=['POST'])
+@main.route('/demo/delete', methods=['POST'])
 def demo_delete():
     try:
         data = request.get_json()
@@ -93,6 +102,6 @@ def demo_delete():
         }, 200
 
 def rollback_db():
-    if app.debug == True:
+    if main.debug == True:
         print(traceback.format_exc())
     db.session.rollback()
