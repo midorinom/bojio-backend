@@ -14,13 +14,12 @@ def create_app():
     return app
 
 if isTest:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+    app.config.from_object('project.config.TestConfig')
 elif app.debug == False:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:password1234@bojio-db.c3tfalfhp9o3.ap-southeast-1.rds.amazonaws.com/bojio-db'
+    app.config.from_object('project.config.ProductionConfig')
 else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/bojio_db'
+    app.config.from_object('project.config.DevelopmentConfig')
 
-app.config['SECRET_KEY'] = 'not really secret'
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_COOKIE_SECURE"] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -30,7 +29,6 @@ app.config['SESSION_USE_SIGNER'] = True
 
 db.init_app(app)
 
-#db = SQLAlchemy(app)
 app.config['SESSION_SQLALCHEMY'] = db
 session = Session(app)
 CORS(app, supports_credentials=True)
