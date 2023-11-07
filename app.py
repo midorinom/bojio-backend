@@ -13,7 +13,7 @@ else:
 
 app.config['SECRET_KEY'] = 'not really secret'
 #app.config["SESSION_COOKIE_SAMESITE"] = "None"
-app.config["SESSION_COOKIE_SECURE"] = True
+#app.config["SESSION_COOKIE_SECURE"] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'sqlalchemy'
 app.config['SESSION_PERMANENT'] = False
