@@ -6,6 +6,8 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from models.user_model import User
 from flask import session, redirect, url_for
+
+from service.user_factory import UserFactory
 # Create a SQLAlchemy engine to connect to your MySQL database
 
 @app.route('/change_password', methods=['POST'])
@@ -21,7 +23,7 @@ def change_password():
              "message": "Please provide a new password"
             }, 400
 
-    user = User.display_profile(user_id)
+    user = UserFactory.display_profile(user_id)
 
     if not user:
         return {
@@ -47,7 +49,7 @@ def change_password():
 def display_profile():
 
     user_id = session['id']
-    user = User.display_profile(user_id)  # Use the new method
+    user = UserFactory.display_profile(user_id)  # Use the new method
     if user:
         return {
             "status": "success",
@@ -78,7 +80,7 @@ def update_profile():
             "message": "Please provide a new username and email"
         }, 400
 
-    user = User.display_profile(user_id)  # Use the new method
+    user = UserFactory.display_profile(user_id)  # Use the new method
     if not user:
         return {
             "status": "error",
@@ -107,7 +109,7 @@ def login():
             password = data['password']
 
             # Use the login method to check if the user's credentials are valid
-            user = User.login_user(username, password)
+            user = UserFactory.login_user(username, password)
 
             if user:
                 session['loggedin'] = True
@@ -134,7 +136,7 @@ def login():
     
 @app.route('/logout', methods=['GET'])
 def logout():
-    User.logout_user()  # Call the logout method from your User model
+    UserFactory.logout_user()  # Call the logout method from your User model
     msg = 'Logout successfully!'
     return {
                         "status": "success",
@@ -145,11 +147,13 @@ def logout():
 def register():
     msg = ''
     if request.method == 'POST':
-
         data = request.get_json()
         username = data['username']
         password = data['password']
         email = data['email']
+        is_business = data.get('is_business', False)  # Check if it's a Business Account
+        company_name = data.get('company_name')
+        work_experience = data.get('work_experience')
 
         if not username or not password or not email:
             msg = 'Please fill out the form!'
@@ -158,9 +162,13 @@ def register():
         elif not re.match(r'[A-Za-z0-9]+', username):
             msg = 'Username must contain only characters and numbers!'
         else:
-            # Attempt to create the user using the class method
+            # Attempt to create the user using the UserFactory
             try:
-                User.create_user(username=username, email=email, password=password)
+                if is_business:
+                    user = UserFactory.create_business_account(username, email, password, company_name, work_experience)
+                else:
+                    user = UserFactory.create_normal_account(username, email, password)
+
                 msg = 'You have successfully registered!'
                 return {
                     "status": "success",
