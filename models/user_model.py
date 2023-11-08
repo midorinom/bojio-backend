@@ -37,12 +37,17 @@ class User(db.Model):
         db.session.commit()
 
     @classmethod
-    def update_user(cls, user_id, new_username, new_email):
+    def update_user(cls, user_id, new_username, new_email, company_name=None, work_experience=None):
         user = cls.query.get(user_id)
         if user:
             user.username = new_username
             user.email = new_email
+            if user.isBusinessAcc:
+                user.company_name = company_name
+                user.work_experience = work_experience
             db.session.commit()
+            return True  # Return True to indicate success
+        return False  # Return False to indicate failure
 
     @classmethod
     def change_password(cls, user_id, new_password):
@@ -51,7 +56,7 @@ class User(db.Model):
             hashed_password = generate_password_hash(new_password).decode('utf-8')
             user.password = hashed_password
             db.session.commit()
-            
+
     @classmethod
     def get_user(cls, user_id):
         return cls.query.get(user_id)

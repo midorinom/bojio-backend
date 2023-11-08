@@ -70,12 +70,13 @@ def display_profile():
     
 @app.route('/updateprofile', methods=['POST'])
 def update_profile():
-        
     data = request.get_json()
-    user_id = session['id']
+    user_id = session.get('id')
     new_username = data.get('username')
     new_email = data.get('email')
-    # new_password = data.get('password')
+    is_business = data.get('is_business')
+    company_name = data.get('company_name')
+    work_experience = data.get('work_experience')
 
     if not new_username or not new_email:
         return {
@@ -83,7 +84,8 @@ def update_profile():
             "message": "Please provide a new username and email"
         }, 400
 
-    user = UserFactory.display_profile(user_id)  # Use the new method
+    user = UserFactory.display_profile(user_id)
+
     if not user:
         return {
             "status": "error",
@@ -91,16 +93,34 @@ def update_profile():
         }, 404
 
     try:
-        user.update_user(user_id, new_username, new_email)  # Pass user_id
+        print(f"Updating user: {user_id}")
+        print(f"New username: {new_username}")
+        print(f"New email: {new_email}")
+
+        if is_business:
+            print(f"Updating as a business user")
+            print(f"Company name: {company_name}")
+            print(f"Work experience: {work_experience}")
+
+            user.update_user(user_id, new_username, new_email, company_name, work_experience)
+        else:
+            print("Updating as a non-business user")
+
+            user.update_user(user_id, new_username, new_email)
+
+        print("Profile updated successfully")
+
         return {
             "status": "success",
             "message": "Profile updated successfully"
         }, 200
     except Exception as e:
+        print(f"Error updating the profile: {e}")
         return {
             "status": "error",
             "message": "Error updating the profile. Please try again."
         }, 500
+
    
 @app.route('/login', methods=['POST'])
 def login():

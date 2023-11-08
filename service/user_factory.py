@@ -42,3 +42,11 @@ class UserFactory:
     @classmethod
     def get_user(cls, id):
         return User.get_user(id)
+    
+    @classmethod
+    def update_profile(cls, user_id, new_username, new_email):
+        user = User.get_user(user_id)
+        if user:
+            user.update_user(user_id, new_username, new_email)
+            return True  # Return True to indicate success
+        return False  # Return False to indicate failure
