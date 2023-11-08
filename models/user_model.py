@@ -15,9 +15,14 @@ class User(db.Model):
     email: str = db.Column(db.String(200), unique=True, nullable=False)
     password: str = db.Column(db.String(200), nullable=False)
     registration_date: DateTime = db.Column(db.DateTime, default=func.now(), nullable=False)
-    isBusinessAcc: Boolean = db.Column(db.Boolean, default=False)  # New column
-    company_name: str = db.Column(db.String(200))  # New column for Business Account
-    work_experience: String = db.Column(db.String(200))  # New column for Business Account
+
+    #Column to set for Business Account
+    isBusinessAcc: Boolean = db.Column(db.Boolean, default=False) 
+
+    #Column for Business Account
+    company_name: str = db.Column(db.String(200))
+    work_experience: String = db.Column(db.String(200))
+
     events_as_attendee = db.relationship('Event', secondary=event_attendance, backref='attendees')
     events_as_host = db.relationship('Event', backref='host')
 
@@ -46,3 +51,7 @@ class User(db.Model):
             hashed_password = generate_password_hash(new_password).decode('utf-8')
             user.password = hashed_password
             db.session.commit()
+            
+    @classmethod
+    def get_user(cls, user_id):
+        return cls.query.get(user_id)

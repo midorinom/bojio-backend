@@ -55,7 +55,10 @@ def display_profile():
             "status": "success",
             "data": {
                 "username": user.username,
-                "email": user.email
+                "email": user.email,
+                "companyname":user.company_name,
+                "workexperience":user.work_experience,
+
             }
         }, 200
     else:

@@ -36,8 +36,9 @@ class UserFactory:
 
     @classmethod
     def display_profile(cls, user_id):
-        return cls.query.get(user_id)
+        user = User.get_user(user_id)  # Use the User model for querying
+        return user if user else None
 
     @classmethod
     def get_user(cls, id):
-        return cls.query.get(id)
+        return User.get_user(id)
