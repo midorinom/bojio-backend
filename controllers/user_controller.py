@@ -1,5 +1,5 @@
 from datetime import date
-from flask import render_template, request, redirect, url_for, session
+from flask import jsonify, render_template, request, redirect, url_for, session
 from app import app, db
 import re 
 from sqlalchemy import create_engine, text
@@ -166,6 +166,7 @@ def logout():
                         "message": msg
                     }, 200
  
+
 @app.route('/register', methods=['POST'])
 def register():
     msg = ''
@@ -174,7 +175,7 @@ def register():
         username = data['username']
         password = data['password']
         email = data['email']
-        is_business = data.get('is_business', False)  # Check if it's a Business Account
+        is_business = data.get('is_business', False)
         company_name = data.get('company_name')
         work_experience = data.get('work_experience')
 
@@ -185,30 +186,17 @@ def register():
         elif not re.match(r'[A-Za-z0-9]+', username):
             msg = 'Username must contain only characters and numbers!'
         else:
-            # Attempt to create the user using the UserFactory
             try:
-                if is_business:
-                    user = UserFactory.create_business_account(username, email, password, company_name, work_experience)
-                else:
-                    user = UserFactory.create_normal_account(username, email, password)
-
+                user = UserFactory.create_user(username, email, password, is_business, company_name, work_experience)
                 msg = 'You have successfully registered!'
-                return {
-                    "status": "success",
-                    "message": msg
-                }, 200
+                return jsonify({"status": "success", "message": msg}), 200
+            except ValueError as ve:
+                msg = str(ve)
             except Exception as e:
                 msg = 'Error creating the account. Please try again.'
-                return {
-                    "status": "error",
-                    "message": msg
-                }, 500
+    
+    return jsonify({"status": "error", "message": msg}), 400
 
-    # If any validation fails or there's an error, return an appropriate response
-    return {
-        "status": "error",
-        "message": msg
-    }, 400
 
 @app.route('/get-session', methods=['GET'])
 def get_session():
